@@ -121,20 +121,25 @@ Comandos da sessão:
 ## Arquitetura
 
 ```
-você → main.rs → agent.rs → llm/ → API OpenAI-compatible
-                  │
-                  └─ tool_call → sandbox/ → container Docker
-                                      │
-                                      └─ stdout/stderr → role: tool → llm
+navegador ──WebSocket── server.rs ── sessions.rs (data/sessions.json)
+                              │
+terminal (--cli) ── main.rs ──┤
+                              ▼
+                           agent.rs → llm/ → API OpenAI-compatible
+                              │
+                              └─ tool_call → sandbox/ → container Docker
+                                                    │
+                                                    └─ stdout/stderr → role: tool → llm
 ```
 
-1. `main.rs` lê a linha, trata Ctrl+C e delega o turno.
-2. `agent.rs` manda o histórico e as ferramentas ao modelo.
-3. Texto sem ferramenta é a resposta final.
-4. `execute_bash` ou `execute_python` vão para a sandbox.
-5. O resultado entra no histórico como mensagem `role: tool`.
-6. O modelo recebe de novo e decide se corrige o comando ou responde.
-7. Na rodada seguinte ao limite `AGENT_MAX_ITERATIONS`, o ciclo aborta.
+1. Sem `--cli`, `main.rs` sobe o servidor. Com `--cli`, lê a linha no terminal e trata Ctrl+C.
+2. `server.rs` entrega a página em `web/` e o WebSocket. `sessions.rs` grava a lista de conversas e o histórico.
+3. `agent.rs` manda o histórico e as ferramentas ao modelo.
+4. Texto sem ferramenta é a resposta final.
+5. `execute_bash` ou `execute_python` vão para a sandbox.
+6. O resultado entra no histórico como mensagem `role: tool`.
+7. O modelo recebe de novo e decide se corrige o comando ou responde.
+8. Na rodada seguinte ao limite `AGENT_MAX_ITERATIONS`, o ciclo aborta.
 
 ## Isolamento
 
@@ -167,7 +172,12 @@ Payloads vazios, com byte nulo ou acima de 64 KiB são recusados antes da exec. 
 ```
 Cargo.toml
 .env.example
-src/main.rs                 loop do terminal
+web/index.html              página do chat
+web/app.css                 layout
+web/app.js                  WebSocket, conversas, anexo e ditado
+src/main.rs                 entrada: chat web ou terminal com --cli
+src/server.rs               HTTP, WebSocket e turnos
+src/sessions.rs             conversas em data/sessions.json
 src/config.rs               variáveis de ambiente
 src/agent.rs                loop, tool calls e circuit breaker
 src/utils.rs                erros e formatação do terminal
