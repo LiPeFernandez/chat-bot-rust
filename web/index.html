@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grok Bot</title>
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="side">
+        <button id="new-chat" type="button">Nova conversa</button>
+        <nav id="chats" class="chats" aria-label="Conversas"></nav>
+        <footer class="side-foot">
+          <span id="model">modelo</span>
+          <span id="conn">conectando</span>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <div id="log" class="log" aria-live="polite"></div>
+        <form id="composer" class="composer">
+          <div id="file-chip" class="file-chip" hidden></div>
+          <div class="box">
+            <button id="attach" type="button" aria-label="Anexar arquivo de texto">+</button>
+            <input id="file" type="file" hidden />
+            <label class="sr" for="input">Mensagem</label>
+            <textarea id="input" rows="1" placeholder="Pergunte qualquer coisa"></textarea>
+            <button id="mic" type="button" aria-label="Ditar" hidden>mic</button>
+            <button id="send" type="submit" aria-label="Enviar">↑</button>
+          </div>
+        </form>
+      </main>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>

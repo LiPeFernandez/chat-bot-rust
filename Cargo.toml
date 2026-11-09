@@ -1,0 +1,21 @@
+[package]
+name = "uncensored-grok-bot"
+version = "0.1.0"
+edition = "2021"
+description = "Agente com chat web, LLM compatível com a API OpenAI e execução isolada em sandbox Docker"
+publish = false
+
+[dependencies]
+tokio = { version = "1.38", features = ["full"] }
+axum = { version = "0.7", features = ["ws"] }
+bollard = "0.15"
+async-openai = "0.27"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.12", features = ["json", "stream"] }
+anyhow = "1.0"
+thiserror = "1.0"
+dotenvy = "0.15"
+futures-util = "0.3"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
